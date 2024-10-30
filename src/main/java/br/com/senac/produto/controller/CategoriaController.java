@@ -17,9 +17,16 @@ public class CategoriaController {
         this.categoriaRepository = categoriaRepository;
     }
 
+    public CategoriaRepository getCategoriaRepository() {
+        return categoriaRepository;
+    }
+
+    public void setCategoriaRepository(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
+    }
+
     @GetMapping("/categoria")
     public ResponseEntity<?> getCategorias() {
         return new ResponseEntity<>(categoriaRepository.findAll(), HttpStatus.OK);
     }
-    
 }

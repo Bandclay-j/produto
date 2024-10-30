@@ -21,10 +21,6 @@ public class ProdutoController {
 
     private ProdutoRepository produtoRepository;
 
-    public ProdutoController(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
-    }
-
     @GetMapping("/produto")
     public ResponseEntity<?> getDadosProduto() {
         return new ResponseEntity<>(produtoRepository.findAll(), HttpStatus.OK);
@@ -51,6 +47,7 @@ public class ProdutoController {
     }
 
     @PostMapping("/produto")
+    @SuppressWarnings("Convert2Diamond")
     public ResponseEntity<?> salvarProdutos(@RequestBody Produto entity) {
         Produto produtoSalvo;
         try {
@@ -65,11 +62,12 @@ public class ProdutoController {
     }
 
     @PutMapping("/produto/{id}")
+    @SuppressWarnings("Convert2Diamond")
     public ResponseEntity<?> atualizaProduto(@PathVariable int id,
                                                 @RequestBody Produto entity) {
         
         Optional<Produto> produtoAtualizar = produtoRepository.findById(id);
-        Produto p = null;
+        Produto p;
 
         if (produtoAtualizar.isPresent()) {
             p = produtoAtualizar.get();
@@ -93,10 +91,11 @@ public class ProdutoController {
     }
     
     @DeleteMapping("/produto/{id}")
+    @SuppressWarnings("Convert2Diamond")
     public ResponseEntity<?> deletaProduto(@PathVariable int id) {
 
         Optional<Produto> produtoExcluir = produtoRepository.findById(id);
-        Produto p = null;
+        Produto p;
 
         if (produtoExcluir.isPresent()) {
             p = produtoExcluir.get();
