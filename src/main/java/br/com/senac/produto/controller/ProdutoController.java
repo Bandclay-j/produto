@@ -2,6 +2,7 @@ package br.com.senac.produto.controller;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,29 +20,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 public class ProdutoController {
 
+    @Autowired
     private ProdutoRepository produtoRepository;
 
-    @GetMapping("/produto")
+    @GetMapping("/produtos")
     public ResponseEntity<?> getDadosProduto() {
         return new ResponseEntity<>(produtoRepository.findAll(), HttpStatus.OK);
     }
     
-    @GetMapping("/produto/{id}")
+    @GetMapping("/produtos/{id}")
     public ResponseEntity<?> getProdutoById(@PathVariable int id) {
         return new ResponseEntity<>(produtoRepository.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/produto/nome/{nome}")
+    @GetMapping("/produtos/nome/{nome}")
     public ResponseEntity<?> getProdutoByNome(@PathVariable String nome) {
         return new ResponseEntity<>(produtoRepository.findByNomeLike('%' + nome + '%'), HttpStatus.OK);
     }
 
-    @GetMapping("/produto/preco/maior/{preco}")
+    @GetMapping("/produtos/preco/maior/{preco}")
     public ResponseEntity<?> getByPrecoMaior(@PathVariable double preco) {
         return new ResponseEntity<>(produtoRepository.findByPrecoGreaterThanEqual(preco), HttpStatus.OK);
     }
 
-    @GetMapping("/produto/preco/menor/{preco}")
+    @GetMapping("/produtos/preco/menor/{preco}")
     public ResponseEntity<?> getByPrecoMenor(@PathVariable double preco) {
         return new ResponseEntity<>(produtoRepository.findByPrecoLessThanEqual(preco), HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package br.com.senac.produto.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -9,7 +10,9 @@ import br.com.senac.produto.repository.ProdutoRepository;
 @Controller
 public class AplicacaoController {
 
+    @Autowired
     private CategoriaRepository categoriaRepository;
+    @Autowired
     private ProdutoRepository produtoRepository;
     
     public CategoriaRepository getCategoriaRepository() {
@@ -35,9 +38,9 @@ public class AplicacaoController {
         this.produtoRepository = produtoRepository;
     }
 
-    @GetMapping("/index")
+    @GetMapping("/")
     public String showProdutoLista(Model model) {
-        model.addAttribute("produto", produtoRepository.findAll());
+        model.addAttribute("produtos", produtoRepository.findAll());
         return "index";
     }
 }

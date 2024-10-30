@@ -3,9 +3,11 @@ package br.com.senac.produto.repository;
 import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import br.com.senac.produto.entity.Produto;
 
+@Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
     ArrayList<Produto> findByNomeLike(String nome);

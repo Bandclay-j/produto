@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "produto")
@@ -16,15 +17,19 @@ public class Produto {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "Nome do Produto é obrigatório")
     @Column
     private String nome;
 
+    @NotBlank(message = "Preço do Produto é obrigatório")
     @Column
     private Double preco;
 
+    @NotBlank(message = "Data de Cadastro do Produto é obrigatório")
     @Column
     private String dataCadastro;
 
+    @NotBlank(message = "Categoria do Produto é obrigatório")
     @Column
     private String categoria;
 
