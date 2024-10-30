@@ -1,8 +1,8 @@
 package br.com.senac.produto.controller;
 
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,98 +20,93 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 public class ProdutoController {
 
-    @Autowired
     private ProdutoRepository produtoRepository;
 
-    @GetMapping("/produtos")
-    public ResponseEntity<?> getDadosProduto() {
-        return new ResponseEntity<>(produtoRepository.findAll(), HttpStatus.OK);
+    public ProdutoController(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
     }
-    
-    @GetMapping("/produtos/{id}")
-    public ResponseEntity<?> getProdutoById(@PathVariable int id) {
+
+    @GetMapping("/produto")
+    public ResponseEntity<?> getDadosProduto() {
+        List<Produto> produtos = produtoRepository.findAll();
+
+        for (int i = 0; i < produtos.size(); i++) {
+
+            if (produtos.get(i).getCategoria() != null) {
+                produtos.get(i).getCategoria().setProdutos(null);
+            }
+            
+        }
+
+        return new ResponseEntity<>(produtos, HttpStatus.OK);
+    }
+
+    @GetMapping("produto/{id}")
+    public ResponseEntity<?> getById(@PathVariable int id) {
         return new ResponseEntity<>(produtoRepository.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/produtos/nome/{nome}")
-    public ResponseEntity<?> getProdutoByNome(@PathVariable String nome) {
-        return new ResponseEntity<>(produtoRepository.findByNomeLike('%' + nome + '%'), HttpStatus.OK);
+    @GetMapping("produto/nome/{nome}")
+    public ResponseEntity<?> getByNome(@PathVariable String nome) {
+        return new ResponseEntity<>(produtoRepository.findByNomeLike("%" + nome + "%"), HttpStatus.OK);
     }
 
-    @GetMapping("/produtos/preco/maior/{preco}")
-    public ResponseEntity<?> getByPrecoMaior(@PathVariable double preco) {
+    @GetMapping("produto/preco/maior/{preco}")
+    public ResponseEntity<?> getByPrecoMaior(@PathVariable float preco) {
         return new ResponseEntity<>(produtoRepository.findByPrecoGreaterThanEqual(preco), HttpStatus.OK);
     }
 
-    @GetMapping("/produtos/preco/menor/{preco}")
-    public ResponseEntity<?> getByPrecoMenor(@PathVariable double preco) {
+    @GetMapping("produto/preco/menor/{preco}")
+    public ResponseEntity<?> getByPrecoMenor(@PathVariable float preco) {
         return new ResponseEntity<>(produtoRepository.findByPrecoLessThanEqual(preco), HttpStatus.OK);
     }
 
     @PostMapping("/produto")
-    @SuppressWarnings("Convert2Diamond")
-    public ResponseEntity<?> salvarProdutos(@RequestBody Produto entity) {
+    public ResponseEntity<?> salvaProduto(@RequestBody Produto entity) {
         Produto produtoSalvo;
         try {
             produtoSalvo = produtoRepository.save(entity);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Erro ao salvar o Produto", 
-                                                HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Erro ao salvar o produto", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<Produto>(produtoSalvo, 
-                                            HttpStatus.OK);
+        return new ResponseEntity<Produto>(produtoSalvo, HttpStatus.OK);
     }
 
-    @PutMapping("/produto/{id}")
-    @SuppressWarnings("Convert2Diamond")
-    public ResponseEntity<?> atualizaProduto(@PathVariable int id,
-                                                @RequestBody Produto entity) {
-        
+    @PutMapping("produto/{id}")
+    public ResponseEntity<?> atualizaProduto(@PathVariable int id, @RequestBody Produto entity) {
         Optional<Produto> produtoAtualizar = produtoRepository.findById(id);
-        Produto p;
-
+        Produto p = null;
         if (produtoAtualizar.isPresent()) {
             p = produtoAtualizar.get();
-
             p.setNome(entity.getNome());
-            p.setCategoria(entity.getCategoria());
-            p.setDataCadastro(entity.getDataCadastro());
             p.setPreco(entity.getPreco());
+            p.setDataCadastro(entity.getDataCadastro());
+            p.setCategoria(entity.getCategoria());
 
             try {
                 p = produtoRepository.save(p);
-            } catch(Exception e) {
-                return new ResponseEntity<String>("Erro ao atualizar o Produto", 
-                                                    HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                return new ResponseEntity<String>("erro ao atualizar o produto", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<Produto>(p, HttpStatus.OK);
         } else {
-            return new ResponseEntity<String>("Produto não encontrado", 
-                                                HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("produto nao encontrado", HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @DeleteMapping("/produto/{id}")
-    @SuppressWarnings("Convert2Diamond")
-    public ResponseEntity<?> deletaProduto(@PathVariable int id) {
-
+    public ResponseEntity<String> deleteProduto(@PathVariable int id) {
         Optional<Produto> produtoExcluir = produtoRepository.findById(id);
-        Produto p;
-
+        
         if (produtoExcluir.isPresent()) {
-            p = produtoExcluir.get();
-
             try {
-                produtoRepository.delete(p);
+                produtoRepository.delete(produtoExcluir.get());
+                return new ResponseEntity<>("Produto excluído com sucesso", HttpStatus.NO_CONTENT);
             } catch (Exception e) {
-                return new ResponseEntity<String>("Erro ao excluir o Produto", 
-                                                    HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Erro ao excluir o produto", HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<Produto>(p, HttpStatus.OK);
         } else {
-            return new ResponseEntity<String>("Produto não encontrado", 
-                                                HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Produto não encontrado", HttpStatus.NOT_FOUND);
         }
     }
 }

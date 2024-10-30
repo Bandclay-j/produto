@@ -6,67 +6,72 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "produto")
 public class Produto {
-    @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @NotBlank(message = "Nome do Produto é obrigatório")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    
     @Column
     private String nome;
 
-    @NotBlank(message = "Preço do Produto é obrigatório")
     @Column
-    private Double preco;
+    private float preco;
 
-    @NotBlank(message = "Data de Cadastro do Produto é obrigatório")
     @Column
     private String dataCadastro;
-
-    @NotBlank(message = "Categoria do Produto é obrigatório")
-    @Column
-    private String categoria;
+    
+    @ManyToOne
+    @JoinColumn(name="categoria_id", referencedColumnName = "id")
+    private Categoria categoria;
 
     @OneToOne
     @JoinColumn(name = "fornecedor_id", referencedColumnName = "id")
     private Fornecedor fornecedor;
 
+    public String exibirDados() {
+        return getId() + getNome() + getPreco() + getDataCadastro() + getCategoria();
+    }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public String getNome() {
         return nome;
     }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
-    public Double getPreco() {
+
+    public float getPreco() {
         return preco;
     }
-    public void setPreco(Double preco) {
+
+    public void setPreco(float preco) {
         this.preco = preco;
     }
+
     public String getDataCadastro() {
         return dataCadastro;
     }
+
     public void setDataCadastro(String dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-    public String getCategoria() {
-        return categoria;
-    }
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+
+   
 
     public Fornecedor getFornecedor() {
         return fornecedor;
@@ -76,9 +81,14 @@ public class Produto {
         this.fornecedor = fornecedor;
     }
 
-    public String exibeDados() {
-        return "Id do Produto: " + getId() + "\nNome do Produto: " + getNome() + 
-        "\nPreço do Produto: " + getPreco() + " \nData de Cadastro do Produto: " + getDataCadastro() + 
-        "\nCategoria do Produto: " + getCategoria();
+    public Categoria getCategoria() {
+        return categoria;
     }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    
+
 }
