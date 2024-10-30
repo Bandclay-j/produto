@@ -1,14 +1,11 @@
 package br.com.senac.produto.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import br.com.senac.produto.entity.Categoria;
 import br.com.senac.produto.entity.Produto;
 import br.com.senac.produto.repository.CategoriaRepository;
 import br.com.senac.produto.repository.ProdutoRepository;
